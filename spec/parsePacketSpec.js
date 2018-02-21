@@ -110,6 +110,10 @@ describe("parsePacket", function() {
                                     unit: null
                             }
                         }
+                    },
+                    harmonics: {
+                        reading: null,
+                        unit: null
                     }
                 }
             },
@@ -225,6 +229,7 @@ describe("parsePacket", function() {
                     "count": 1,
                     "log": [
                         {
+                            "startOfFailure": "1931-12-13T19:46:07.000Z",
                             "endOfFailure": "1999-12-31T23:00:14.000Z",
                             "duration": 2147483647,
                             "unit": "s"
@@ -285,6 +290,10 @@ describe("parsePacket", function() {
                                 "unit": "kW"
                             }
                         }
+                    },
+                    "harmonics": {
+                        "reading": null,
+                        "unit": null
                     }
                 }
             },
@@ -392,11 +401,13 @@ describe("parsePacket", function() {
                     "count": 2,
                     "log": [
                         {
+                            "startOfFailure": "2010-12-08T14:20:15.000Z",
                             "endOfFailure": "2010-12-08T14:24:15.000Z",
                             "duration": 240,
                             "unit": "s"
                         },
                         {
+                            "startOfFailure": "2010-12-08T14:05:03.000Z",
                             "endOfFailure": "2010-12-08T14:10:04.000Z",
                             "duration": 301,
                             "unit": "s"
@@ -457,6 +468,10 @@ describe("parsePacket", function() {
                                 "unit": "kW"
                             }
                         }
+                    },
+                    "harmonics": {
+                        "reading": null,
+                        "unit": null
                     }
                 }
             },
