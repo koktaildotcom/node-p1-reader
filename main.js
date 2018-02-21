@@ -101,7 +101,7 @@ function _setupSerialConnection() {
                 var crcOk = true;
                 if (crcCheckRequired) {
                     const expectedCrc = parseInt(received.substr(endCharPos + 1, 4), 16);
-                    crcOk = checkCrc(packet, expectedCrc);
+                    crcOk = checkCrc(packet + '!', expectedCrc);
                 }
                 received = '';
 
