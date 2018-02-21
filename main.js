@@ -94,16 +94,23 @@ function _setupSerialConnection() {
             var startCharPos = received.indexOf(config.startCharacter);
             var endCharPos = received.indexOf(config.stopCharacter);
 
+            if (endCharPos >= 0 && endCharPos < startCharPos) {
+                received = received.substr(endCharPos + 1);
+                startCharPos = -1;
+                endCharPos = -1;
+            }
+
             // Package is complete if the start- and stop character are received
             const crcReceived = endCharPos >= 0 && received.length > endCharPos + 4;
-            if (startCharPos >= 0 && endCharPos >= 0 && (!crcCheckRequired || crcReceived)) {
+            if (startCharPos >= 0 && endCharPos >= 0 && crcReceived) {
                 var packet = received.substr(startCharPos, endCharPos - startCharPos);
+                const expectedCrc = parseInt(received.substr(endCharPos + 1, 4), 16);
+                received = received.substr(endCharPos + 5);
+
                 var crcOk = true;
                 if (crcCheckRequired) {
-                    const expectedCrc = parseInt(received.substr(endCharPos + 1, 4), 16);
                     crcOk = checkCrc(packet + '!', expectedCrc);
                 }
-                received = '';
 
                 if (crcOk) {
                     var parsedPacket = parsePacket(packet);
