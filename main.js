@@ -3,7 +3,7 @@ const util = require('util');
 let serialPort = require('serialport');
 
 let serialPortUsed = false;
-let availablePorts = [];
+let autodiscoverList = [];
 let constructor;
 let timer;
 let crcCheckRequired = false;
