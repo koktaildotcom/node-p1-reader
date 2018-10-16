@@ -205,13 +205,14 @@ var p1Reader = new P1Reader({debug: true});
 Force specific serial port
 ==========================
 
-If for some reason the automatic serial port discovery does not work it is possible to force a certain port.
+If for some reason the automatic serial port discovery does not work it is possible to force a certain port with a specific configuration.
 
-Provide the `serialPort` option parameter to use a specific serial port:
-
-```
-var p1Reader = new P1Reader({serialPort: '/dev/tty-usbserial1'});
-```
+Provide a `serialPort` object as option parameter to set a specific serial port configuration. The object should contain all of the following field:
+* `port` : Portname of the serial port on which the Smart Meter is connected (e.g. '/dev/tty-usbserial1')
+* `baudRate` : Baud rate of the serial port (e.g. '9600' or '115200')
+* `parity` : Parity of the serial port (e.g. 'none' or 'even')
+* `dataBits` : Number of data bits used for the serial port (e.g. '7' or '8')
+* `stopBits` : Number of stop bits used for the serial port (e.g. '1')
 
 Official DSMR documentation
 ===========================
@@ -222,6 +223,16 @@ This documentation was used as a reference to create and verify this module.
 
 Changelog
 =========
+1.5.1
+- Small fix for bug that broke the emulator since last version
+
+1.5.0
+- Serial port auto discovery function now also tries different configurations to allow to automatically connect to any DSMR 4+ Smart Meter
+- Allow forcing both a specific port and configuration (baudrate, parity, databits and stopbits) - Note that the "port" parameter is replaced, which is not backwards compatible
+- Removing the "crash on purpose" when a smart meter could not be found
+- Improving debug logging for better traceability of issues
+- Upgrading "node-serialport" dependency to latest version for improved stability
+- Applying ES6 standards to code
 
 1.4.1
 - Minor bug fix on incorrectly returning the LongPowerFailureLog object
