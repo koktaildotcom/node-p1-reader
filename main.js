@@ -114,8 +114,8 @@ function _setupSerialConnection() {
         sp.on('data', (data) => {
             received += data.toString();
 
-            const startCharPos = received.indexOf(config.startCharacter);
-            const endCharPos = received.indexOf(config.stopCharacter);
+            let startCharPos = received.indexOf(config.startCharacter);
+            let endCharPos = received.indexOf(config.stopCharacter);
 
             if (endCharPos >= 0 && endCharPos < startCharPos) {
                 received = received.substr(endCharPos + 1);
@@ -137,6 +137,8 @@ function _setupSerialConnection() {
 
                 if (crcOk) {
                     const parsedPacket = parsePacket(packet);
+
+                    received = '';
 
                     // Verify if connected to the correct serial port at initialization
                     if (!serialPortUsed) {
