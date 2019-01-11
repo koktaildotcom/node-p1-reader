@@ -1,10 +1,23 @@
-var P1Reader = require('../main');
-var fs = require('fs');
+var P1Reader = require('../main')
 
-var config = {};
+const fs = require('fs')
+const fetch = require('node-fetch')
+
+/**
+ * 1: Goto: http://developer.athom.com
+ * 2: Login
+ * 3: Open the inspector (chrome f12)
+ * 4: Click the `network` tab
+ * 5: Refresh the page
+ * 6: Copy the id from the url: https://[localId].homey.homeylocal.com/api/manager/system/ping?id=[homeyId]
+ */
+const homeyId = '41--------------------2c'
+const homeyEndpoint = '/update'
+const homeyHost = 'https://' + homeyId + '.connect.athom.com/api/app/com.p1' + homeyEndpoint
+const config = {}
 
 // Enable Debug Mode by uncommenting the line below
-config.debug = true;
+config.debug = true
 
 // Force a specific serial port configuration (instead of auto discovery) by uncommenting the lines below
 // config.serialPort = {
@@ -28,46 +41,45 @@ config.debug = true;
 //     intervalGas: 3 // Must be larger than 'interval'
 // };
 
-var p1Reader = new P1Reader(config);
+const p1Reader = new P1Reader(config)
 
 p1Reader.on('connected', portConfig => {
-    console.log('Connection with the Smart Meter has been established on port: ' + portConfig.port
-        + ' (BaudRate: ' + portConfig.baudRate + ', Parity: ' + portConfig.parity + ', Databits: '
-        + portConfig.dataBits + 'Stopbits: ' + portConfig.stopBits + ')');
-});
+    console.log(
+      'Connection with the Smart Meter has been established on port: ' +
+      portConfig.port
+      + ' (BaudRate: ' + portConfig.baudRate + ', Parity: ' +
+      portConfig.parity + ', Databits: '
+      + portConfig.dataBits + 'Stopbits: ' + portConfig.stopBits + ')')
+})
 
 p1Reader.on('reading', data => {
-    console.log('Reading received: currently consuming ' + data.electricity.received.actual.reading + data.electricity.received.actual.unit);
+    console.log('Reading received: currently consuming ' +
+      data.electricity.received.actual.reading +
+      data.electricity.received.actual.unit)
 
-    // Write electricity totals and actual value to CSV
-    var csvOutput = '' +
-        data.timestamp + ';' +
-        data.electricity.received.tariff1.reading + ';' +
-        data.electricity.received.tariff2.reading + ';' +
-        data.electricity.received.actual.reading + ';' +
-        data.electricity.tariffIndicator + ';' +
-        data.electricity.numberOfPowerFailures + ';' +
-        data.electricity.numberOfLongPowerFailures + ';' +
-        data.gas.timestamp + ';' +
-        data.gas.reading + '\n';
+    const requestJson = JSON.stringify(data)
 
-    fs.appendFile('p1-reader-log.csv', csvOutput, err => {});
-});
+    fetch(homeyHost, {
+        method: 'post',
+        body: requestJson,
+        headers: {'Content-Type': 'application/json'},
+    }).then(res => console.log(res))
+})
 
 p1Reader.on('reading-raw', data => {
     // If you are interested in viewing the unparsed data that was received at the serial port uncomment the line below
     // console.log(data);
-});
+})
 
 p1Reader.on('error', error => {
-    console.log(error);
-});
+    console.log(error)
+})
 
 p1Reader.on('close', () => {
-    console.log('Connection closed');
-});
+    console.log('Connection closed')
+})
 
 // Handle all uncaught errors without crashing
 process.on('uncaughtException', error => {
-    console.error(error);
-});
+    console.error(error)
+})
